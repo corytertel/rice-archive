@@ -1,0 +1,64 @@
+{ config, pkgs, ... }:
+
+{
+  imports =
+    [
+      ./dunst
+      ./rofi
+      ./urxvt
+      ./zathura
+    ];
+
+  services.picom = {
+    enable = true;
+    inactiveOpacity = "1.00";
+    activeOpacity = "1.00";
+    experimentalBackends = true;
+    vSync = true;
+  };
+
+  home.file = {
+    ".config/xmobar/xmobarrc".text = builtins.readFile ./xmobar/xmobarrc;
+    ".config/xmobar/volume.sh".source = ./xmobar/volume.sh;
+    ".icons/icons" = {
+      recursive = true;
+      source = ./icons;
+    };
+  };
+
+  home.packages = with pkgs; [
+    libsForQt5.qtstyleplugins
+  ];
+
+  dconf.enable = true;
+  gtk = {
+    enable = true;
+
+    font = {
+      package = null;
+      name = "Iosevka Nerd Font 11";
+    };
+
+    theme = {
+      package = pkgs.parchment-gtk-theme;
+      name = "Parchment";
+    };
+
+    iconTheme = {
+      package = pkgs.zafiro-icons;
+      name = "Zafiro-icons";
+    };
+
+    gtk3.extraConfig = {
+      gtk-icon-theme-name = "Zafiro-icons";
+      gtk-theme-name = "Parchment";
+      gtk-application-prefer-dark-theme = 0;
+    };
+  };
+
+  qt = {
+    enable = true;
+    platformTheme = "gtk";
+    style.name = "gtk2";
+  };
+}
